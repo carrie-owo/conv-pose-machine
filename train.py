@@ -3,6 +3,8 @@ import argparse
 import signal
 from tensorflow import keras
 from datetime import datetime
+from gen_data import LSP_DATA
+from Transformers import Compose, RandomCrop, RandomResized
 
 resume = None
 log_file_path = './my_log.txt'
@@ -10,7 +12,7 @@ weight_dir = pathlib.Path('weights').absolute()
 weights_file = weight_dir.joinpath('cpm.h5')
 
 #Arguments
-parser = argparse.ArgumentParser(description='U22 Net')
+parser = argparse.ArgumentParser(description='CPM')
 parser.add_argument('--resume', default=None, type=str)
 args = parser.parse_args()
 if args.resume:
@@ -23,6 +25,8 @@ save_interval = 100
 optimizer = keras.optimizers.Adam(learning_rate)
 loss = keras.losses.MeanSquaredError()
 
+training_dataset_path = 'lspet_dataset'
+val_data_path = 'lsp_dataset'
 
 def train():
     model = ""
@@ -52,6 +56,7 @@ def train():
     print("---------- Start Training ----------")
     for e in range(num_epoch):
         try:
+            data = LSP_DATA('lspet', training_dataset_path, 8, Compose([RandomResized(), RandomCrop(368)]))
             # inputs, masks = get_training_img_gt_batch(batch_size=batch_size)
             # loss = model.train_on_batch(inputs, masks)
             pass
