@@ -3,8 +3,7 @@ from tensorflow.keras.layers import Conv2D, MaxPool2D, Dropout, Flatten, Dense
 class CPMModel(tf.keras.models.Model):
     def __init__(self):
         super(CPMModel, self).__init__()
-        num_pose = 14
-        self.num_pose = num_pose
+        self.num_pose = 14
         self.pool_center = MaxPool2D(9,8, padding="same")
 
         self.conv1_stage1 = Conv2D(128, 9, padding="same",activation="relu")
@@ -127,8 +126,6 @@ class CPMModel(tf.keras.models.Model):
         return x
 
     def call(self, image, center_map):
-        image = tf.squeeze(image, 0)
-        center_map = tf.squeeze(center_map, 0)
         pool_center_map = self.pool_center(center_map)
         conv7_stage1_map = self.stage1(image)
         pool3_stage2_map = self.middle(image)
@@ -144,15 +141,9 @@ class CPMModel(tf.keras.models.Model):
 
 if __name__ == "__main__":
     import numpy as np
-    num_pose=5
     model=CPMModel()
     input=np.ones([1,368,368,3],dtype=np.float64)
     centermap = np.zeros((1,368, 368, 1), dtype=np.float32)
-    stage1_output,stage2_output,stage3_output,stage4_output,stage5_output,stage6_output=model(input,centermap)
-    print(stage1_output.shape)
-    print(stage2_output.shape)
-    print(stage3_output.shape)
-    print(stage4_output.shape)
-    print(stage5_output.shape)
-    print(stage6_output.shape)
+    output=model(input,centermap)
+    print(output.shape) # (6, 1, 46, 46, 15)
     
