@@ -78,7 +78,7 @@ class CPMModel(tf.keras.models.Model):
 
     def stage2(self, pool3_stage2_map, conv7_stage1_map, pool_center_map):
         x = self.conv4_stage2(pool3_stage2_map)
-        x = tf.concat([x, conv7_stage1_map, pool_center_map], axis=3)
+        x = tf.concat([x, conv7_stage1_map, pool_center_map], axis=-1)
         x = self.Mconv1_stage2(x)
         x = self.Mconv2_stage2(x)
         x = self.Mconv3_stage2(x)
@@ -88,7 +88,7 @@ class CPMModel(tf.keras.models.Model):
 
     def stage3(self, pool3_stage2_map, Mconv5_stage2_map, pool_center_map):
         x = self.conv1_stage3(pool3_stage2_map)
-        x = tf.concat([x, Mconv5_stage2_map, pool_center_map], axis=3)
+        x = tf.concat([x, Mconv5_stage2_map, pool_center_map], axis=-1)
         x = self.Mconv1_stage3(x)
         x = self.Mconv2_stage3(x)
         x = self.Mconv3_stage3(x)
@@ -98,7 +98,7 @@ class CPMModel(tf.keras.models.Model):
 
     def stage4(self, pool3_stage2_map, Mconv5_stage3_map, pool_center_map):
         x = self.conv1_stage4(pool3_stage2_map)
-        x = tf.concat([x, Mconv5_stage3_map, pool_center_map], axis=3)
+        x = tf.concat([x, Mconv5_stage3_map, pool_center_map], axis=-1)
         x = self.Mconv1_stage4(x)
         x = self.Mconv2_stage4(x)
         x = self.Mconv3_stage4(x)
@@ -108,7 +108,7 @@ class CPMModel(tf.keras.models.Model):
 
     def stage5(self, pool3_stage2_map, Mconv5_stage4_map, pool_center_map):
         x = self.conv1_stage5(pool3_stage2_map)
-        x = tf.concat([x, Mconv5_stage4_map, pool_center_map], axis=3)
+        x = tf.concat([x, Mconv5_stage4_map, pool_center_map], axis=-1)
         x = self.Mconv1_stage5(x)
         x = self.Mconv2_stage5(x)
         x = self.Mconv3_stage5(x)
@@ -118,7 +118,7 @@ class CPMModel(tf.keras.models.Model):
 
     def stage6(self, pool3_stage2_map, Mconv5_stage5_map, pool_center_map):
         x = self.conv1_stage6(pool3_stage2_map)
-        x = tf.concat([x, Mconv5_stage5_map, pool_center_map], axis=3)
+        x = tf.concat([x, Mconv5_stage5_map, pool_center_map], axis=-1)
         x = self.Mconv1_stage6(x)
         x = self.Mconv2_stage6(x)
         x = self.Mconv3_stage6(x)
