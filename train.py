@@ -49,7 +49,7 @@ def train():
     centermap_input = keras.Input(shape=centermap_shape)
     cpm = CPMModel()
     outputs = cpm(image_input, centermap_input)
-    model = keras.Model(inputs=(image_input, centermap_input), outputs=outputs, name='CPMModel')
+    model = keras.Model(inputs=[image_input, centermap_input], outputs=outputs, name='CPMModel')
     model.compile(optimizer=optimizer, loss=loss_function, metrics=None)
     model.summary()
 
@@ -84,7 +84,9 @@ def train():
                 image, centermap, heatmap = d
                 
                 image = tf.expand_dims(image, axis=0)
-                centermap = tf.expand_dims(centermap, axis=3)
+                image = tf.expand_dims(image, axis=0)
+                centermap = tf.expand_dims(centermap, axis=0)
+                centermap = tf.expand_dims(centermap, -1)
                 print(image.shape)
                 print(centermap.shape)
                 print(heatmap.shape)
