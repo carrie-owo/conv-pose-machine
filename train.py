@@ -80,15 +80,19 @@ def train():
     print("---------- Start Training ----------")
     for e in range(num_epoch):
         l=len(data)
-        for i, d in enumerate(data):
-            if i%1000==0:
-                print(i,l,i/l)
-            image, heatmap, centermap = d
-            image = tf.expand_dims(image, axis=0)
-            image = tf.expand_dims(image, axis=0)
-            centermap = tf.expand_dims(centermap, axis=0)
-            centermap = tf.expand_dims(centermap, -1)
-            loss = model.train_on_batch((image, centermap), heatmap)
+        try:
+            for i, d in enumerate(data):
+                if i%100==0:
+                    print(i,l,i/l)
+                image, heatmap, centermap = d
+                image = tf.expand_dims(image, axis=0)
+                image = tf.expand_dims(image, axis=0)
+                centermap = tf.expand_dims(centermap, axis=0)
+                centermap = tf.expand_dims(centermap, -1)
+                loss = model.train_on_batch((image, centermap), heatmap)
+        except KeyboardInterrupt:
+            save_weights()
+            return    
         print('\nTraining epoch {} with loss {}'.format(e, loss))
         if e % 10 == 0:
             print('[%05d] Loss: %.4f' % (e, loss))
