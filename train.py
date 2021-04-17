@@ -81,7 +81,7 @@ def train():
         try:
             data = LSP_DATA('lspet', training_dataset_path, 8, Compose([RandomResized(), RandomCrop(368)]))
             for _, d in enumerate(data):
-                image, centermap, heatmap = d
+                image, heatmap, centermap = d
                 
                 image = tf.expand_dims(image, axis=0)
                 image = tf.expand_dims(image, axis=0)
