@@ -78,8 +78,13 @@ def train():
     print("---------- Start Training ----------")
     for e in range(num_epoch):
         try:
-            image, heatmap, centermap = LSP_DATA('lspet', training_dataset_path, 8, Compose([RandomResized(), RandomCrop(368)]))
-            loss = model.train_on_batch((image, centermap), heatmap)
+            data = LSP_DATA('lspet', training_dataset_path, 8, Compose([RandomResized(), RandomCrop(368)]))
+            for _, d in enumerate(data):
+                image, centermap, heatmap = d
+                print(image.shape)
+                print(centermap.shape)
+                print(heatmap.shape)
+                loss = model.train_on_batch((image, centermap), heatmap)
         except KeyboardInterrupt:
             save_weights()
             return
