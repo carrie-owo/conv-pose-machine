@@ -127,8 +127,8 @@ class CPMModel(tf.keras.models.Model):
         return x
 
     def call(self, image, center_map):
-        image = tf.squeeze(image, 0)
-        center_map = tf.squeeze(center_map, 0)
+        # image = tf.squeeze(image, 0)
+        # center_map = tf.squeeze(center_map, 0)
         pool_center_map = self.pool_center(center_map)
         conv7_stage1_map = self.stage1(image)
         pool3_stage2_map = self.middle(image)

@@ -1,6 +1,7 @@
 import pathlib
 import argparse
-import signal
+# import signal
+import tensorflow as tf
 from tensorflow import keras
 from datetime import datetime
 from preprocess.gen_data import LSP_DATA
@@ -72,8 +73,8 @@ def train():
         save_weights()
         exit(0)
 
-    for sig in [signal.SIGABRT, signal.SIGINT, signal.SIGTSTP]:
-        signal.signal(sig, autosave)
+    # for sig in [signal.SIGABRT, signal.SIGINT, signal.SIGTSTP]:
+    #     signal.signal(sig, autosave)
 
     print("---------- Start Training ----------")
     for e in range(num_epoch):
@@ -81,6 +82,9 @@ def train():
             data = LSP_DATA('lspet', training_dataset_path, 8, Compose([RandomResized(), RandomCrop(368)]))
             for _, d in enumerate(data):
                 image, centermap, heatmap = d
+                
+                image = tf.expand_dims(image, axis=0)
+                centermap = tf.expand_dims(centermap, axis=3)
                 print(image.shape)
                 print(centermap.shape)
                 print(heatmap.shape)
