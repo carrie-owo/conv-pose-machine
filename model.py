@@ -5,25 +5,25 @@ class CPMModel(tf.keras.models.Model):
         super(CPMModel, self).__init__()
         num_pose = 5
         self.num_pose = num_pose
-        self.pool_center = MaxPool2D(9,8)
+        self.pool_center = MaxPool2D(9,8, padding="same")
 
         self.conv1_stage1 = Conv2D(128, 9, padding="same",activation="relu")
-        self.pool1_stage1 = MaxPool2D(3,2)
+        self.pool1_stage1 = MaxPool2D(3,2, padding="same")
         self.conv2_stage1 = Conv2D(128, 9, padding="same",activation="relu")
-        self.pool2_stage1 = MaxPool2D(3,2)
+        self.pool2_stage1 = MaxPool2D(3,2, padding="same")
         self.conv3_stage1 = Conv2D(128, 9, padding="same",activation="relu")
-        self.pool3_stage1 = MaxPool2D(3,2)
+        self.pool3_stage1 = MaxPool2D(3,2, padding="same")
         self.conv4_stage1 = Conv2D(32, 5, padding="same",activation="relu")
         self.conv5_stage1 = Conv2D(512, 9, padding="same",activation="relu")
         self.conv6_stage1 = Conv2D(512, 1, padding="same",activation="relu")
         self.conv7_stage1 = Conv2D(self.num_pose+1, 1, padding="same")
 
         self.conv1_stage2 = Conv2D(128, 9, padding="same",activation="relu")
-        self.pool1_stage2 = MaxPool2D(3,2)
+        self.pool1_stage2 = MaxPool2D(3,2, padding="same")
         self.conv2_stage2 = Conv2D(128, 9, padding="same",activation="relu")
-        self.pool2_stage2 = MaxPool2D(3,2)
+        self.pool2_stage2 = MaxPool2D(3,2, padding="same")
         self.conv3_stage2 = Conv2D(128, 9, padding="same",activation="relu")
-        self.pool3_stage2 = MaxPool2D(3,2)
+        self.pool3_stage2 = MaxPool2D(3,2, padding="same")
 
         self.conv4_stage2 = Conv2D(32, 5, padding="same",activation="relu")
         self.Mconv1_stage2 = Conv2D(128, 11, padding="same",activation="relu")
