@@ -1,9 +1,9 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Conv2D, MaxPool2D, Dropout, Flatten, Dense
-class Model(tf.keras.Model):
+class CPMModel(tf.keras.models.Model):
     def __init__(self):
-        super(Model, self).__init__()
-
+        super(CPMModel, self).__init__()
+        num_pose = 5
         self.num_pose = num_pose
         self.pool_center = MaxPool2D(9,8)
 
@@ -127,6 +127,8 @@ class Model(tf.keras.Model):
         return x
 
     def call(self, image, center_map):
+        image = tf.squeeze(image, 0)
+        center_map = tf.squeeze(center_map, 0)
         pool_center_map = self.pool_center(center_map)
         conv7_stage1_map = self.stage1(image)
         pool3_stage2_map = self.middle(image)
@@ -136,11 +138,14 @@ class Model(tf.keras.Model):
         Mconv5_stage5_map = self.stage5(pool3_stage2_map, Mconv5_stage4_map, pool_center_map)
         Mconv5_stage6_map = self.stage6(pool3_stage2_map, Mconv5_stage5_map, pool_center_map)
 
-        return conv7_stage1_map, Mconv5_stage2_map, Mconv5_stage3_map, Mconv5_stage4_map, Mconv5_stage5_map, Mconv5_stage6_map
+        # return conv7_stage1_map, Mconv5_stage2_map, Mconv5_stage3_map, Mconv5_stage4_map, Mconv5_stage5_map, Mconv5_stage6_map
+        output = tf.stack([conv7_stage1_map, Mconv5_stage2_map, Mconv5_stage3_map, Mconv5_stage4_map, Mconv5_stage5_map, Mconv5_stage6_map])
+        return output
+
 if __name__ == "__main__":
     import numpy as np
     num_pose=5
-    model=Model()
+    model=CPMModel()
     input=np.ones([1,368,368,3],dtype=np.float64)
     centermap = np.zeros((1,368, 368, 1), dtype=np.float32)
     stage1_output,stage2_output,stage3_output,stage4_output,stage5_output,stage6_output=model(input,centermap)

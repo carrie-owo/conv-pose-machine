@@ -3,8 +3,9 @@ import argparse
 import signal
 from tensorflow import keras
 from datetime import datetime
-from gen_data import LSP_DATA
-from Transformers import Compose, RandomCrop, RandomResized
+from preprocess.gen_data import LSP_DATA
+from preprocess.Transformers import Compose, RandomCrop, RandomResized
+from model import CPMModel
 
 resume = None
 log_file_path = './my_log.txt'
@@ -20,7 +21,7 @@ if args.resume:
 
 
 learning_rate = 1e-3
-num_epoch = 1e6
+num_epoch = 1000000
 save_interval = 100
 optimizer = keras.optimizers.Adam(learning_rate)
 loss = keras.losses.MeanSquaredError()
@@ -28,8 +29,29 @@ loss = keras.losses.MeanSquaredError()
 training_dataset_path = 'lspet_dataset'
 val_data_path = 'lsp_dataset'
 
+image_shape = (1,368,368,3)
+centermap_shape = (1,368,368,1)
+
+def loss_function(y_true, y_pred):
+    loss0 = loss(y_true, y_pred[0])
+    loss1 = loss(y_true, y_pred[1])
+    loss2 = loss(y_true, y_pred[2])
+    loss3 = loss(y_true, y_pred[3])
+    loss4 = loss(y_true, y_pred[4])
+    loss5 = loss(y_true, y_pred[5])
+
+    total_loss = loss0 + loss1 + loss2 + loss3 + loss4 + loss5
+    return total_loss
+
 def train():
-    model = ""
+    image_input = keras.Input(shape=image_shape)
+    centermap_input = keras.Input(shape=centermap_shape)
+    cpm = CPMModel()
+    outputs = cpm(image_input, centermap_input)
+    model = keras.Model(inputs=(image_input, centermap_input), outputs=outputs, name='CPMModel')
+    model.compile(optimizer=optimizer, loss=loss_function, metrics=None)
+    model.summary()
+
     with open(log_file_path, "a") as f:
         f.write('\nTraining begins at: %s\n' % datetime.now())
 
@@ -56,15 +78,13 @@ def train():
     print("---------- Start Training ----------")
     for e in range(num_epoch):
         try:
-            data = LSP_DATA('lspet', training_dataset_path, 8, Compose([RandomResized(), RandomCrop(368)]))
-            # inputs, masks = get_training_img_gt_batch(batch_size=batch_size)
-            # loss = model.train_on_batch(inputs, masks)
-            pass
+            image, heatmap, centermap = LSP_DATA('lspet', training_dataset_path, 8, Compose([RandomResized(), RandomCrop(368)]))
+            loss = model.train_on_batch((image, centermap), heatmap)
         except KeyboardInterrupt:
             save_weights()
             return
-        except ValueError:
-            continue
+        # except ValueError:
+        #     continue
 
         print('\nTraining epoch {} with loss {}'.format(e, loss))
         if e % 10 == 0:

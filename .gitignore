@@ -1,1 +1,7 @@
 .vscode/*
+lsp_dataset
+lspet_dataset
+my_log.txt
+__pycache__
+preprocess/__pycache__
+weights
