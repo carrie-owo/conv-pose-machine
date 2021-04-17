@@ -3,7 +3,7 @@ from tensorflow.keras.layers import Conv2D, MaxPool2D, Dropout, Flatten, Dense
 class CPMModel(tf.keras.models.Model):
     def __init__(self):
         super(CPMModel, self).__init__()
-        num_pose = 5
+        num_pose = 15
         self.num_pose = num_pose
         self.pool_center = MaxPool2D(9,8, padding="same")
 
