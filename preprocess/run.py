@@ -3,8 +3,8 @@ from Transformers import Compose, RandomCrop, RandomResized, TestResized
 
 
 if __name__ == "__main__":
-	training_dataset_path = 'lspet_dataset'
-	val_data_path = 'lsp_dataset'
+	training_dataset_path = '../lspet_dataset'
+	val_data_path = '../lsp_dataset'
 
 	# training_dataset_path = 'C:\Users\Wei Li\OneDrive\桌面\final_cv\CPM\preprocess\lspet_dataset'
 	# val_data_path = 'C:\Users\Wei Li\OneDrive\桌面\final_cv\CPM\preprocess\lsp_dataset'

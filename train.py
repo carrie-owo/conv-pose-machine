@@ -76,21 +76,20 @@ def train():
     # for sig in [signal.SIGABRT, signal.SIGINT, signal.SIGTSTP]:
     #     signal.signal(sig, autosave)
 
+    data = LSP_DATA('lspet', training_dataset_path, 8, Compose([RandomResized(), RandomCrop(368)]))
+    for _, d in enumerate(data):
+        image, heatmap, centermap = d
+        image = tf.expand_dims(image, axis=0)
+        image = tf.expand_dims(image, axis=0)
+        centermap = tf.expand_dims(centermap, axis=0)
+        centermap = tf.expand_dims(centermap, -1)
+        print(image.shape)
+        print(centermap.shape)
+        print(heatmap.shape)
     print("---------- Start Training ----------")
     for e in range(num_epoch):
         try:
-            data = LSP_DATA('lspet', training_dataset_path, 8, Compose([RandomResized(), RandomCrop(368)]))
-            for _, d in enumerate(data):
-                image, heatmap, centermap = d
-                
-                image = tf.expand_dims(image, axis=0)
-                image = tf.expand_dims(image, axis=0)
-                centermap = tf.expand_dims(centermap, axis=0)
-                centermap = tf.expand_dims(centermap, -1)
-                print(image.shape)
-                print(centermap.shape)
-                print(heatmap.shape)
-                loss = model.train_on_batch((image, centermap), heatmap)
+            loss = model.train_on_batch((image, centermap), heatmap)
         except KeyboardInterrupt:
             save_weights()
             return
