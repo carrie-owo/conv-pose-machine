@@ -131,7 +131,7 @@ class LSP_DATA():
 		#image = torchvision.transforms.functional.to_tensor(image)
 		image = tf.image.convert_image_dtype(image, tf.float32)
 		#heatmap = torch.from_numpy(np.transpose(heatmap, (2, 0, 1)))
-		heatmap = tf.convert_to_tensor(np.transpose(heatmap, (2, 0, 1)), dtype = tf.float32)
+		heatmap = tf.convert_to_tensor(heatmap, dtype = tf.float32)
 		#centermap = torch.from_numpy(np.transpose(centermap, (2, 0, 1)))
 		centermap = tf.convert_to_tensor(np.transpose(centermap, (2, 0, 1)), dtype = tf.float32)
 

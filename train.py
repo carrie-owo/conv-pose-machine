@@ -83,9 +83,9 @@ def train():
         image = tf.expand_dims(image, axis=0)
         centermap = tf.expand_dims(centermap, axis=0)
         centermap = tf.expand_dims(centermap, -1)
-        print(image.shape)
-        print(centermap.shape)
-        print(heatmap.shape)
+        # print(image.shape)
+        # print(centermap.shape)
+        # print(heatmap.shape)
     print("---------- Start Training ----------")
     for e in range(num_epoch):
         try:
