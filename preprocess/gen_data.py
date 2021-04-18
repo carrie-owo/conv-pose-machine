@@ -60,8 +60,30 @@ def read_mat(mode, path, image_list):
 		w = image.shape[1]
 
 		# Calculate the center points of each image
-		center_x = (limits[i][0][limits[i][0] > 0].min() + limits[i][0][limits[i][0] < w].max()) / 2
-		center_y = (limits[i][1][limits[i][1] > 0].min() + limits[i][1][limits[i][1] < h].max()) / 2
+		# center_x = (limits[i][0][limits[i][0] > 0].min() + limits[i][0][limits[i][0] < w].max()) / 2
+
+		cx_1 = limits[i][0][limits[i][0] > 0]
+
+		cx_2 = limits[i][0][limits[i][0] < w]
+
+		cy_1 = limits[i][1][limits[i][1] > 0]
+
+		cy_2 = limits[i][1][limits[i][1] < h]
+
+		center_x = 0
+
+		center_y = 0
+
+		if len(cx_1) > 0 and len(cx_2) > 0:
+			center_x = (limits[i][0][limits[i][0] > 0].min() + limits[i][0][limits[i][0] < w].max()) / 2
+
+		if len(cy_1) > 0 and len(cy_2) > 0:
+			center_y = (limits[i][1][limits[i][1] > 0].min() + limits[i][1][limits[i][1] < h].max()) / 2
+
+
+		# center_x = (limits[i][0][limits[i][0] > 0].min() + limits[i][0][limits[i][0] < w].max()) / 2
+
+		# center_y = (limits[i][1][limits[i][1] > 0].min() + limits[i][1][limits[i][1] < h].max()) / 2
 
 		center_point_list.append([center_x, center_y])
 
