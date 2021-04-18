@@ -75,10 +75,10 @@ def read_mat(mode, path, image_list):
 		center_y = 0
 		
 		if len(cx_1) > 0 and len(cx_2) > 0:
-			center_x = (limits[i][0][limits[i][0] > 0].min() + limits[i][0][limits[i][0] < w].max()) / 2
+			center_x = (cx_1.min() + cx_2.max()) / 2
 
 		if len(cy_1) > 0 and len(cy_2) > 0:
-			center_y = (limits[i][1][limits[i][1] > 0].min() + limits[i][1][limits[i][1] < h].max()) / 2
+			center_y = (cy_1.min() + cy_2.max()) / 2
 
 
 		# center_x = (limits[i][0][limits[i][0] > 0].min() + limits[i][0][limits[i][0] < w].max()) / 2
@@ -95,7 +95,7 @@ def read_mat(mode, path, image_list):
 
 		scale = 1
 		if len(sc_1) > 0 and len(sc_2) > 0:
-			scale = (limits[i][1][limits[i][1] < h].max() - limits[i][1][limits[i][1] > 0].min() + 4) / 368
+			scale = (sc_1.max() - sc_2.min() + 4) / 368
 		scale_list.append(scale)
 
 	return key_point_list, center_point_list, scale_list
@@ -118,6 +118,7 @@ class LSP_DATA():
 		self.sigma = 3.0
 
 	def __getitem__(self, item):
+
 		image_path = self.image_list[item]
 		image = np.array(cv2.imread(image_path), dtype=np.float32)
 
@@ -126,7 +127,10 @@ class LSP_DATA():
 		scale = self.scale_list[item]
 
 		# Expand dataset
-		image, key_points, center_points = self.transformer(image, key_points, center_points, scale)
+		try:
+			image, key_points, center_points = self.transformer(image, key_points, center_points, scale)
+		except:
+			return None
 		h, w, _ = image.shape
 
 		# Generate heatmap
