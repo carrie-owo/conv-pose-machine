@@ -88,7 +88,16 @@ def read_mat(mode, path, image_list):
 		center_point_list.append([center_x, center_y])
 
 		# Calculate the scale of each image
-		scale = (limits[i][1][limits[i][1] < h].max() - limits[i][1][limits[i][1] > 0].min() + 4) / 368
+
+		sc_1 = limits[i][1][limits[i][1] < h]
+
+		sc_2 = limits[i][1][limits[i][1] > 0]
+
+		scale = 0
+
+		if len(cx_1) > 0 and len(cx_2) > 0:
+			scale = (limits[i][1][limits[i][1] < h].max() - limits[i][1][limits[i][1] > 0].min() + 4) / 368
+			
 		scale_list.append(scale)
 
 	return key_point_list, center_point_list, scale_list
