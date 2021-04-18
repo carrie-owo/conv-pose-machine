@@ -30,10 +30,13 @@ loss = keras.losses.MeanSquaredError()
 training_dataset_path = 'lspet_dataset'
 val_data_path = 'lsp_dataset'
 
-image_shape = (1,368,368,3)
-centermap_shape = (1,368,368,1)
+image_shape = (368,368,3)
+centermap_shape = (368,368,1)
 
 def loss_function(y_true, y_pred):
+    print("y_true.shape: ", y_true.shape)
+    print("y_pred.shape: ", y_pred.shape)
+
     loss0 = loss(y_true, y_pred[0])
     loss1 = loss(y_true, y_pred[1])
     loss2 = loss(y_true, y_pred[2])
@@ -48,7 +51,17 @@ def train():
     image_input = keras.Input(shape=image_shape)
     centermap_input = keras.Input(shape=centermap_shape)
     cpm = CPMModel()
+
+    # image_input = tf.squeeze(image_input, axis=0)
+    # centermap_input = tf.squeeze(centermap_input, axis=0)
+
+    print("image_input.shape: ", image_input.shape)
+    print("centermap_input.shape: ", centermap_input.shape)
+
     outputs = cpm(image_input, centermap_input)
+
+    print("outputs.shape: ", outputs.shape)
+
     model = keras.Model(inputs=[image_input, centermap_input], outputs=outputs, name='CPMModel')
     model.compile(optimizer=optimizer, loss=loss_function, metrics=None)
     model.summary()

@@ -135,6 +135,10 @@ class LSP_DATA():
 		#centermap = torch.from_numpy(np.transpose(centermap, (2, 0, 1)))
 		centermap = tf.convert_to_tensor(np.transpose(centermap, (2, 0, 1)), dtype = tf.float32)
 
+		image = tf.reshape(image,[368,368,3])
+		heatmap = tf.reshape(heatmap,[46,46,15])
+		centermap = tf.reshape(centermap,[368,368,1])
+
 		return image, heatmap, centermap
 
 	def __len__(self):
