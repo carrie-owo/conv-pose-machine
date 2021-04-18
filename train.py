@@ -99,10 +99,14 @@ def train():
                     print(i,l,i/l)
                 image, heatmap, centermap = d
                 image = tf.expand_dims(image, axis=0)
-                image = tf.expand_dims(image, axis=0)
+                # image = tf.expand_dims(image, axis=0)
                 centermap = tf.expand_dims(centermap, axis=0)
-                centermap = tf.expand_dims(centermap, -1)
-                loss = model.train_on_batch((image, centermap), heatmap)
+                # centermap = tf.expand_dims(centermap, -1)
+                print("image.shape: ", image.shape)
+                print("heatmap.shape: ", heatmap.shape)
+                print("centermap.shape: ", centermap.shape)
+                # loss = model.train_on_batch((image, centermap), heatmap)
+                loss = model.fit((image, centermap), heatmap)
         except KeyboardInterrupt:
             save_weights()
             return    
