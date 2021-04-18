@@ -109,6 +109,8 @@ def train():
             #     loss = model.fit((image, centermap), heatmap)
         for i, d in enumerate(data):
             image, heatmap, centermap = d
+            image = tf.expand_dims(image, axis=0)
+            centermap = tf.expand_dims(centermap, axis=0)
             with tf.GradientTape() as tape:
                 output = cpm(image, centermap)
                 loss = loss_function(heatmap, output)
