@@ -1,6 +1,6 @@
 import pathlib
 import argparse
-# import signal
+import os
 import tensorflow as tf
 from tensorflow import keras
 from datetime import datetime
@@ -96,7 +96,8 @@ def train():
     data = LSP_DATA('lspet', training_dataset_path, 8, Compose([RandomResized(), RandomCrop(368)]))
     print("---------- Start Training ----------")
     for e in range(num_epoch):
-        l=len(data)
+        l = len(data)
+        num_error=0
         # try:
             # for i, d in enumerate(data):
             #     if i%100==0:
@@ -112,24 +113,32 @@ def train():
             #     # loss = model.train_on_batch((image, centermap), heatmap)
             #     loss = model.fit((image, centermap), heatmap)
         for i, d in enumerate(data):
-            image, heatmap, centermap = d
-            image = tf.expand_dims(image, axis=0)
-            centermap = tf.expand_dims(centermap, axis=0)
-            with tf.GradientTape() as tape:
-                output = cpm(image, centermap)
-                loss = loss_function(heatmap, output)
-            gradients = tape.gradient(loss, cpm.trainable_variables)
-            optimizer.apply_gradients(zip(gradients, cpm.trainable_variables))                   
-
+            if d is None:
+                num_error += 1
+                continue
+            try:
+                if i % 1000 == 0:
+                    print(i,l,i/l,num_error)
+                image, heatmap, centermap = d
+                image = tf.expand_dims(image, axis=0)
+                centermap = tf.expand_dims(centermap, axis=0)
+                with tf.GradientTape() as tape:
+                    output = cpm(image, centermap)
+                    loss = loss_function(heatmap, output)
+                gradients = tape.gradient(loss, cpm.trainable_variables)
+                optimizer.apply_gradients(zip(gradients, cpm.trainable_variables))                   
+            except:
+                num_error += 1
         # except KeyboardInterrupt:
         #     save_weights()
         #     return    
         print('\nTraining epoch {} with loss {}'.format(e, loss))
-        if e % 10 == 0:
+        print("num_error:",num_error)
+        if e % 1 == 0:
             print('[%05d] Loss: %.4f' % (e, loss))
             with open(log_file_path, "a") as f:
                 f.write('\n[%05d] Loss: %.4f' % (e, loss))
-
+            cpm.save_weights(os.path.join("ck",str(e)+" "+str(float(loss))+" loss"))
         # if save_interval and e > 0 and e % save_interval == 0:
         #     save_weights()
         
