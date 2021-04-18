@@ -126,7 +126,7 @@ class CPMModel(tf.keras.models.Model):
         return x
 
     def call(self, image, center_map):
-        print("success_01")
+        # print("success_01")
         
         pool_center_map = self.pool_center(center_map)
         conv7_stage1_map = self.stage1(image)
@@ -139,7 +139,7 @@ class CPMModel(tf.keras.models.Model):
 
         # return conv7_stage1_map, Mconv5_stage2_map, Mconv5_stage3_map, Mconv5_stage4_map, Mconv5_stage5_map, Mconv5_stage6_map
         output = tf.stack([conv7_stage1_map, Mconv5_stage2_map, Mconv5_stage3_map, Mconv5_stage4_map, Mconv5_stage5_map, Mconv5_stage6_map])
-        print("success")
+        # print("success")
         return output
 
 if __name__ == "__main__":
