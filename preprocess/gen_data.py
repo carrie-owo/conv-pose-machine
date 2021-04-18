@@ -73,7 +73,7 @@ def read_mat(mode, path, image_list):
 		center_x = 0
 
 		center_y = 0
-
+		
 		if len(cx_1) > 0 and len(cx_2) > 0:
 			center_x = (limits[i][0][limits[i][0] > 0].min() + limits[i][0][limits[i][0] < w].max()) / 2
 
@@ -93,11 +93,9 @@ def read_mat(mode, path, image_list):
 
 		sc_2 = limits[i][1][limits[i][1] > 0]
 
-		scale = 0
-
-		if len(cx_1) > 0 and len(cx_2) > 0:
+		scale = 1
+		if len(sc_1) > 0 and len(sc_2) > 0:
 			scale = (limits[i][1][limits[i][1] < h].max() - limits[i][1][limits[i][1] > 0].min() + 4) / 368
-			
 		scale_list.append(scale)
 
 	return key_point_list, center_point_list, scale_list
