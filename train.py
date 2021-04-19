@@ -21,7 +21,7 @@ if args.resume:
 
 
 learning_rate = 1e-3
-num_epoch = 1000000
+num_epoch = 50
 batch_size = 1
 save_interval = 100
 optimizer = keras.optimizers.Adam(learning_rate)
