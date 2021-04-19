@@ -1,4 +1,5 @@
 import numpy as np
+import tensorflow as tf
 import cv2
 from model import CPMModel
 from tensorflow import keras
@@ -83,17 +84,21 @@ def draw_image(image, key_points):
 
 if __name__ == "__main__":
 	#model = torch.load('../model/best_cpm.pth').cuda()
-    weights = 'weights.h5'
-    image_path = 'test_image.jpg'
-    inputs = keras.Input(shape=image_shape)
-    network = CPMModel()
-    outputs = network(inputs)
-    model = keras.Model(inputs = inputs, outputs = outputs, name = 'cpm')
-    model.compile(optimizer=optimizer, loss=loss_function, metrics=None)
+	weights = 'ck\\49 4.9110906452654035e-09 loss'
+	image_path = 'a.jpg'
+	# inputs = keras.Input(shape=image_shape)
+	# network = CPMModel()
+	
+	# outputs = network(inputs)
+	
+	# model = keras.Model(inputs = inputs, outputs = outputs, name = 'cpm')
 
-    model.load_weights(weights)
-    
+	# model.compile(optimizer=optimizer, loss=loss_function, metrics=None)
+	# model.load_weights(weights)
+
+		
 	image = cv2.imread(image_path)
+
 	height, width, _ = image.shape
 	image = np.asarray(image, dtype=np.float32)
 	image = cv2.resize(image, (368, 368), interpolation=cv2.INTER_CUBIC)
@@ -109,6 +114,23 @@ if __name__ == "__main__":
 	kernel[kernel < 0.01] = 0
 	centermap[:, :, 0] = kernel
 	centermap = tf.convert_to_tensor(np.transpose(centermap, (2, 0, 1)))
+	
+	image = tf.expand_dims(image, axis=0)
+	centermap = tf.reshape(centermap, [1,368,368,1])
+
+	inputs = keras.Input(shape=image_shape)
+	network = CPMModel()
+	
+	print("inputs.shape: ", inputs.shape)
+	print("centermap.shape: ", centermap.shape)
+	# centermap = centermap.reshape([1,368,368,1])
+
+	outputs = network(inputs, centermap)
+	
+	model = keras.Model(inputs = inputs, outputs = outputs, name = 'cpm')
+
+	model.compile(optimizer=optimizer, metrics=None)
+	model.load_weights(weights)
 
 	# image = torch.unsqueeze(image, 0).cuda()
 	# centermap = torch.unsqueeze(centermap, 0).cuda()
