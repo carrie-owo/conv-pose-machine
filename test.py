@@ -1,11 +1,12 @@
 import numpy as np
 import tensorflow as tf
 import cv2
+import os
 from model import CPMModel
 from tensorflow import keras
-#import torch
-#import torchvision.transforms.functional as F
+import seaborn as sns
 from preprocess.gen_data import gaussian_kernel
+import matplotlib.pyplot as plt
 
 image_shape = (368,368,3)
 
@@ -22,7 +23,8 @@ def get_key_points(heatmap6, height, width):
 	:return: All key points of the person in the original image.
 	"""
 	# Get final heatmap
-	heatmap = np.asarray(heatmap6.cpu().data)[0]
+	print(heatmap6.shape)
+	heatmap = np.asarray(heatmap6.cpu().numpy())[0]
 
 	key_points = []
 	# Get k key points from heatmap6
@@ -83,20 +85,9 @@ def draw_image(image, key_points):
 
 
 if __name__ == "__main__":
-	#model = torch.load('../model/best_cpm.pth').cuda()
-	weights = 'ck\\49 4.9110906452654035e-09 loss'
+	latest = tf.train.latest_checkpoint("./")
 	image_path = 'a.jpg'
-	# inputs = keras.Input(shape=image_shape)
-	# network = CPMModel()
 	
-	# outputs = network(inputs)
-	
-	# model = keras.Model(inputs = inputs, outputs = outputs, name = 'cpm')
-
-	# model.compile(optimizer=optimizer, loss=loss_function, metrics=None)
-	# model.load_weights(weights)
-
-		
 	image = cv2.imread(image_path)
 
 	height, width, _ = image.shape
@@ -121,30 +112,24 @@ if __name__ == "__main__":
 	inputs = keras.Input(shape=image_shape)
 	network = CPMModel()
 	
-	print("inputs.shape: ", inputs.shape)
-	print("centermap.shape: ", centermap.shape)
-	# centermap = centermap.reshape([1,368,368,1])
+	network.load_weights(latest)
 
-	outputs = network(inputs, centermap)
+	heat1, heat2, heat3, heat4, heat5, heat6 = network(image, centermap)
 	
-	model = keras.Model(inputs = inputs, outputs = outputs, name = 'cpm')
+	heat6=np.array(heat6)
+	for i in range(15):
+		heat = heat6[0,:,:, i]
+		print(heat)
+		plt.figure()
+		p1 = sns.heatmap(heat)
+		#key_points = get_key_points(heat6, height=height, width=width)
 
-	model.compile(optimizer=optimizer, metrics=None)
-	model.load_weights(weights)
+		#image = draw_image(cv2.imread(image_path), key_points)
 
-	# image = torch.unsqueeze(image, 0).cuda()
-	# centermap = torch.unsqueeze(centermap, 0).cuda()
-
-	# model.eval()
-	# input_var = torch.autograd.Variable(image)
-	# center_var = torch.autograd.Variable(centermap)
-
-	heat1, heat2, heat3, heat4, heat5, heat6 = model(image, centermap)
-	key_points = get_key_points(heat6, height=height, width=width)
-
-	image = draw_image(cv2.imread(image_path), key_points)
-
-	cv2.imshow('test image', image)
-	cv2.waitKey(0)
-
-	cv2.imwrite(image_path.rsplit('.', 1)[0] + '_ans.jpg', image)
+		#cv2.imshow('test image', image)
+		figure = p1.get_figure()
+		try:
+			figure.savefig("ans" + str(i) + ".png", dpi=400)
+			print("ok:",i)
+		except:
+			print("error",i)
