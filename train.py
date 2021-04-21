@@ -41,7 +41,7 @@ def loss_function(y_true, y_pred):
 def train():
     cpm = CPMModel()
 
-    data = LSP_DATA('lspet', training_dataset_path, 8, Compose([RandomResized(), RandomCrop(368)]))
+    data = LSP_DATA('lspet', training_dataset_path, 8)
     print("---------- Start Training ----------")
     for e in range(num_epoch):
         l = len(data)
