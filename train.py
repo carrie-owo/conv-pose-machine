@@ -4,8 +4,7 @@ import os
 import tensorflow as tf
 from tensorflow import keras
 from datetime import datetime
-from preprocess.gen_data import LSP_DATA
-from preprocess.Transformers import Compose, RandomCrop, RandomResized
+from gen_data import LSP_DATA
 from model import CPMModel
 import matplotlib.pyplot as plt
 import seaborn as sns
