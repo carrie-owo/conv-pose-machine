@@ -109,11 +109,10 @@ def gaussian_kernel(size_w, size_h, center_x, center_y, sigma):
 
 
 class LSP_DATA():
-	def __init__(self, mode, path, stride, transformer=None):
+	def __init__(self, mode, path, stride):
 		self.image_list = read_dataset(path)
 		self.key_point_list, self.center_point_list, self.scale_list = read_mat(mode, path, self.image_list)
 		self.stride = stride
-		self.transformer = transformer
 		self.sigma = 3.0
 
 	def __getitem__(self, item):
