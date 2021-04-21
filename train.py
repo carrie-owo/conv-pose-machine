@@ -20,11 +20,11 @@ if args.resume:
     resume = args.resume
 
 
-learning_rate = 1e-3
-num_epoch = 50
+learning_rate = 1e-4
+num_epoch = 1
 batch_size = 1
 save_interval = 100
-optimizer = keras.optimizers.Adam(learning_rate)
+optimizer = keras.optimizers.SGD(learning_rate)
 loss = keras.losses.MeanSquaredError()
 
 training_dataset_path = 'lspet_dataset'

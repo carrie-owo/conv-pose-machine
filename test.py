@@ -85,9 +85,18 @@ def draw_image(image, key_points):
 
 
 if __name__ == "__main__":
-	latest = tf.train.latest_checkpoint("./")
+	latest = tf.train.latest_checkpoint("./ck/")
 	image_path = 'a.jpg'
 	
+	# print("latest: ", latest)
+	# exit()
+
+	# latest = "./ck/0 0.12519291043281555 loss"
+
+	# print("latest: ", latest)
+	# exit()
+
+
 	image = cv2.imread(image_path)
 
 	height, width, _ = image.shape
@@ -122,7 +131,7 @@ if __name__ == "__main__":
 		print(heat)
 		plt.figure()
 		p1 = sns.heatmap(heat)
-		#key_points = get_key_points(heat6, height=height, width=width)
+		key_points = get_key_points(heat6, height=height, width=width)
 
 		#image = draw_image(cv2.imread(image_path), key_points)
 
