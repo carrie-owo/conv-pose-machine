@@ -51,7 +51,7 @@ class RandomResized(object):
 		:param scale: The scale of each image, representing the main part, which is calculated at line 63 of gen_data.py.
 		:return: Randomly resize image, key points and center points.
 		"""
-		random_scale = random.uniform(self.scale_min, self.scale_max)
+		random_scale = 1
 		ratio = random_scale / scale
 
 		return resize_image_points(image, key_points, center_points, ratio)
@@ -125,8 +125,8 @@ class RandomCrop(object):
 		self.size = (size, size)  # (368, 368)
 
 	def __call__(self, image, key_points, center_points):
-		x_offset = random.randint(-5, 5)
-		y_offset = random.randint(-5, 5)
+		x_offset = 0
+		y_offset = 0
 		center_x = center_points[0] + x_offset
 		center_y = center_points[1] + y_offset
 
