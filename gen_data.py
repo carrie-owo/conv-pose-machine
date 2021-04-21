@@ -60,13 +60,42 @@ def read_mat(mode, path, image_list):
 		w = image.shape[1]
 
 		# Calculate the center points of each image
-		center_x = (limits[i][0][limits[i][0] > 0].min() + limits[i][0][limits[i][0] < w].max()) / 2
-		center_y = (limits[i][1][limits[i][1] > 0].min() + limits[i][1][limits[i][1] < h].max()) / 2
+		# center_x = (limits[i][0][limits[i][0] > 0].min() + limits[i][0][limits[i][0] < w].max()) / 2
+
+		cx_1 = limits[i][0][limits[i][0] > 0]
+
+		cx_2 = limits[i][0][limits[i][0] < w]
+
+		cy_1 = limits[i][1][limits[i][1] > 0]
+
+		cy_2 = limits[i][1][limits[i][1] < h]
+
+		center_x = -1
+
+		center_y = -1
+		
+		if len(cx_1) > 0 and len(cx_2) > 0:
+			center_x = (cx_1.min() + cx_2.max()) / 2
+
+		if len(cy_1) > 0 and len(cy_2) > 0:
+			center_y = (cy_1.min() + cy_2.max()) / 2
+
+
+		# center_x = (limits[i][0][limits[i][0] > 0].min() + limits[i][0][limits[i][0] < w].max()) / 2
+
+		# center_y = (limits[i][1][limits[i][1] > 0].min() + limits[i][1][limits[i][1] < h].max()) / 2
 
 		center_point_list.append([center_x, center_y])
 
 		# Calculate the scale of each image
-		scale = (limits[i][1][limits[i][1] < h].max() - limits[i][1][limits[i][1] > 0].min() + 4) / 368
+
+		sc_1 = limits[i][1][limits[i][1] < h]
+
+		sc_2 = limits[i][1][limits[i][1] > 0]
+
+		scale = -1
+		if len(sc_1) > 0 and len(sc_2) > 0:
+			scale = (sc_1.max() - sc_2.min() + 4) / 368
 		scale_list.append(scale)
 
 	return key_point_list, center_point_list, scale_list
@@ -81,7 +110,6 @@ def gaussian_kernel(size_w, size_h, center_x, center_y, sigma):
 
 class LSP_DATA():
 	def __init__(self, mode, path, stride, transformer=None):
-	# def __init__(self):
 		self.image_list = read_dataset(path)
 		self.key_point_list, self.center_point_list, self.scale_list = read_mat(mode, path, self.image_list)
 		self.stride = stride
@@ -89,15 +117,25 @@ class LSP_DATA():
 		self.sigma = 3.0
 
 	def __getitem__(self, item):
+
 		image_path = self.image_list[item]
 		image = np.array(cv2.imread(image_path), dtype=np.float32)
 
 		key_points = self.key_point_list[item]
 		center_points = self.center_point_list[item]
 		scale = self.scale_list[item]
+		if center_points[0]<0 or center_points[1]<0 or scale<0:
+			return None
+		h,w,_=image.shape
+		upscale=min(368/h,368/w)
+		center_points[0]*=upscale
+		center_points[1]*=upscale
+		h=int(h*upscale+0.000001)
+		w=int(w*upscale+0.000001)
+		resized = cv2.resize(image, (w,h), interpolation = cv2.INTER_AREA)
+		image=np.zeros([368,368,3],dtype=np.float32)
+		image[:h,:w,:]=resized
 
-		# Expand dataset
-		image, key_points, center_points = self.transformer(image, key_points, center_points, scale)
 		h, w, _ = image.shape
 
 		# Generate heatmap
@@ -134,6 +172,10 @@ class LSP_DATA():
 		heatmap = tf.convert_to_tensor(heatmap, dtype = tf.float32)
 		#centermap = torch.from_numpy(np.transpose(centermap, (2, 0, 1)))
 		centermap = tf.convert_to_tensor(np.transpose(centermap, (2, 0, 1)), dtype = tf.float32)
+
+		image = tf.reshape(image,[368,368,3])
+		heatmap = tf.reshape(heatmap,[46,46,15])
+		centermap = tf.reshape(centermap,[368,368,1])
 
 		return image, heatmap, centermap
 
