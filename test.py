@@ -14,7 +14,7 @@ learning_rate = 1e-3
 optimizer = keras.optimizers.Adam(learning_rate)
 
 
-def get_key_points(heatmap6, height, width):
+def get_key_points(heatmap, height, width):
 	"""
 	Get all key points from heatmap6.
 	:param heatmap6: The heatmap6 of CPM cpm.
@@ -22,23 +22,15 @@ def get_key_points(heatmap6, height, width):
 	:param width: The width of original image.
 	:return: All key points of the person in the original image.
 	"""
-	# Get final heatmap
-	print(heatmap6.shape)
-	heatmap = np.asarray(heatmap6.cpu().numpy())[0]
-
 	key_points = []
 	# Get k key points from heatmap6
-	for i in heatmap[1:]:
-		# Get the coordinate of key point in the heatmap (46, 46)
-		y, x = np.unravel_index(np.argmax(i), i.shape)
-
-		# Calculate the scale to fit original image
-		scale_x = width / i.shape[1]
-		scale_y = height / i.shape[0]
-		x = int(x * scale_x)
-		y = int(y * scale_y)
-
-		key_points.append([x, y])
+	for x in range(1,15):
+		maxv,maxi,maxj=0,0,0
+		for i in range(46):
+			for j in range(46):
+				if heatmap[i,j,x]>maxv:
+					maxv,maxi,maxj=heatmap[i,j,x],i,j
+		key_points.append([maxi*8, maxj*8])
 
 	return key_points
 
@@ -85,7 +77,7 @@ def draw_image(image, key_points):
 
 
 if __name__ == "__main__":
-	latest = tf.train.latest_checkpoint("./ck/")
+	latest = tf.train.latest_checkpoint("./ck3/")
 	image_path = 'a.jpg'
 	
 	# print("latest: ", latest)
@@ -125,20 +117,32 @@ if __name__ == "__main__":
 
 	heat1, heat2, heat3, heat4, heat5, heat6 = network(image, centermap)
 	
-	heat6=np.array(heat6)
+	heat = heat6[0,:,:, :]
+
+	key_points = get_key_points(heat, height=height, width=width)
+
+	image = draw_image(cv2.imread(image_path), key_points)
+
+	# cv2.imshow('test image', image)
+	# cv2.waitKey(0)
 	for i in range(15):
 		heat = heat6[0,:,:, i]
 		print(heat)
 		plt.figure()
 		p1 = sns.heatmap(heat)
-		key_points = get_key_points(heat6, height=height, width=width)
 
-		#image = draw_image(cv2.imread(image_path), key_points)
-
-		#cv2.imshow('test image', image)
 		figure = p1.get_figure()
 		try:
 			figure.savefig("ans" + str(i) + ".png", dpi=400)
 			print("ok:",i)
 		except:
 			print("error",i)
+
+	# key_points = get_key_points(heat6, height=height, width=width)
+
+	# image = draw_image(cv2.imread(image_path), key_points)
+
+	cv2.imshow('test image', image)
+	cv2.waitKey(0)
+
+	# cv2.imwrite(image_path.rsplit('.', 1)[0] + '_ans.jpg', image)

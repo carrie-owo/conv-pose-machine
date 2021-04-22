@@ -12,7 +12,7 @@ import seaborn as sns
 log_file_path = './my_log.txt'
 
 learning_rate = 1e-4
-num_epoch = 5
+num_epoch = 100
 batch_size = 1
 save_interval = 100
 optimizer = keras.optimizers.Adam(learning_rate)
