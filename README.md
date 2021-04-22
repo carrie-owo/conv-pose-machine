@@ -4,7 +4,7 @@ This is the personal **TensorFlow** implementation of *Convolutional Pose Machin
 [LSPET Dataset](https://sam.johnson.io/research/lspet.html) and [LSP Dataset](https://sam.johnson.io/research/lsp.html) is used. The number of key points is 14.
 ## Environment
 The code is developed using Python 3.7 on Windows 10. NVIDIA GPUs are not requirement, but we suggest using. The code is developed and tested using NVIDIA GeForce RTX3080 Laptop.
-## Virtual Environment on A Personal Machine
+## Requirement
 Let's use **requirements.txt** to install all needed libraries using the following command on your local computer:
 ```shell
 (env) $ pip install -r requirements.txt
