@@ -61,30 +61,9 @@ def train():
                     output = cpm(image, centermap)
                     loss = loss_function(heatmap, output)
                 gradients = tape.gradient(loss, cpm.trainable_variables)
-                optimizer.apply_gradients(zip(gradients, cpm.trainable_variables)) 
-
-                # for j in range(15):
-                       
-                #     heat = heatmap[:,:, j]
-
-                #     plt.figure()
-                #     p1 = sns.heatmap(heat)
-                #     figure = p1.get_figure()
-                #     figure.savefig("o1" + str(j) + ".png", dpi=400) 
-
-                # heat = image[0,:,:,0]
-
-                # plt.figure()
-                # p1 = sns.heatmap(heat)
-                # figure = p1.get_figure()
-                # figure.savefig("o2" + str(i) + ".png", dpi=400)
-                # exit()
-                # break
-                # exit()             
+                optimizer.apply_gradients(zip(gradients, cpm.trainable_variables))       
             except Exception as e:
-                # print(e)
                 num_error += 1
-        # exit()
         print('\nTraining epoch {} with loss {}'.format(e, loss))
         print("num_error:",num_error)
         if e % 1 == 0:
