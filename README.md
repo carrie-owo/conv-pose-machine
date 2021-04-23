@@ -23,3 +23,5 @@ To show running results:
 python test.py
 ```
 Then the model estimation result will be shown and saved.
+## Result
+When we train our model, we used 1 batch and 70 epochs. In the test, we got the heatmap corresponding to 14 key points
