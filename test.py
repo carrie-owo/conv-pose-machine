@@ -5,7 +5,7 @@ import os
 from model import CPMModel
 from tensorflow import keras
 import seaborn as sns
-from preprocess.gen_data import gaussian_kernel
+from gen_data import gaussian_kernel
 import matplotlib.pyplot as plt
 
 image_shape = (368,368,3)
@@ -79,15 +79,6 @@ def draw_image(image, key_points):
 if __name__ == "__main__":
 	latest = tf.train.latest_checkpoint("./ck3/")
 	image_path = 'a.jpg'
-	
-	# print("latest: ", latest)
-	# exit()
-
-	# latest = "./ck/0 0.12519291043281555 loss"
-
-	# print("latest: ", latest)
-	# exit()
-
 
 	image = cv2.imread(image_path)
 
@@ -97,7 +88,6 @@ if __name__ == "__main__":
 
 	# Normalize
 	image -= image.mean()
-	#image = F.to_tensor(image)
 
 	# Generate center map
 	centermap = np.zeros((368, 368, 1), dtype=np.float32)
@@ -118,13 +108,6 @@ if __name__ == "__main__":
 	heat1, heat2, heat3, heat4, heat5, heat6 = network(image, centermap)
 	
 	heat = heat6[0,:,:, :]
-
-	key_points = get_key_points(heat, height=height, width=width)
-
-	image = draw_image(cv2.imread(image_path), key_points)
-
-	# cv2.imshow('test image', image)
-	# cv2.waitKey(0)
 	for i in range(15):
 		heat = heat6[0,:,:, i]
 		print(heat)
@@ -138,11 +121,9 @@ if __name__ == "__main__":
 		except:
 			print("error",i)
 
-	# key_points = get_key_points(heat6, height=height, width=width)
+	key_points = get_key_points(heat6, height=height, width=width)
 
-	# image = draw_image(cv2.imread(image_path), key_points)
+	image = draw_image(cv2.imread(image_path), key_points)
 
 	cv2.imshow('test image', image)
 	cv2.waitKey(0)
-
-	# cv2.imwrite(image_path.rsplit('.', 1)[0] + '_ans.jpg', image)
