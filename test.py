@@ -120,9 +120,7 @@ if __name__ == "__main__":
 			print("ok:",i)
 		except:
 			print("error",i)
-
 	# key_points = get_key_points(heat6, height=height, width=width)
-
 	# image = draw_image(cv2.imread(image_path), key_points)
 
 	# cv2.imshow('test image', image)
